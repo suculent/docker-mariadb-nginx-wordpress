@@ -28,7 +28,7 @@ services:
     web-server:
       image: nginx:alpine
       restart: always
-      container_name: nginx
+      container_name: frontend
       volumes:
         - wordpress:/var/www/html
         - ./data/wordpress/wp-content:/var/www/html/wp-content
