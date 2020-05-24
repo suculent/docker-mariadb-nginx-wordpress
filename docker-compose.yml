@@ -79,7 +79,7 @@ services:
         - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
         - run_vol:/var/run
       ports:
-        - "${PORT}:8008" # was 80 but goes out through Traefik on https port
+        - "8008:8008" # was 80 but goes out through Traefik on https port
           labels:
       - "traefik.enable=true"
       - "traefik.port=8008"
