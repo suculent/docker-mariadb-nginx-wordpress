@@ -48,42 +48,42 @@ services:
       - "traefik.frontend.auth.basic.users=traefik:$$apr1$$JVrTyD7r$DwX82aghrfYFJXh.kFfbU."
       - "traefik.frontend.rule=Host:traefik.zentour.net"
 
-    db:
-      env_file:
-        - .env
-      image: mariadb:10
-      restart: always
-      volumes:
-        - ./data/mysql:/var/lib/mysql
-        - ./conf/mariadb/my.cnf:/etc/mysql/conf.d/settings.cnf
-        - ./conf/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-      environment:
-        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-        - MYSQL_DATABASE=${MYSQL_DATABASE}
-        - MYSQL_USER=${MYSQL_USER}
-        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      ports:
-        - "${MYSQL_PORT}:3306"
+  db:
+    env_file:
+      - .env
+    image: mariadb:10
+    restart: always
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./conf/mariadb/my.cnf:/etc/mysql/conf.d/settings.cnf
+      - ./conf/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
 
-    web-server:
-      env_file:
-        - .env
-      image: nginx:alpine
-      restart: always
-      volumes:
-        - wordpress:/var/www/html
-        - ./data/wordpress/wp-content:/var/www/html/wp-content
-        - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
-        - ./conf/nginx/cloudflare.conf:/etc/nginx/cloudflare.conf
-        - ./log/nginx/:/var/log/nginx/
-        - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
-        - run_vol:/var/run
-      ports:
-        - "8008:8008" # was 80 but goes out through Traefik on https port
-          labels:
+  web-server:
+    env_file:
+      - .env
+    image: nginx:alpine
+    restart: always
+    volumes:
+      - wordpress:/var/www/html
+      - ./data/wordpress/wp-content:/var/www/html/wp-content
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./conf/nginx/cloudflare.conf:/etc/nginx/cloudflare.conf
+      - ./log/nginx/:/var/log/nginx/
+      - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
+      - run_vol:/var/run
+    ports:
+      - 8008:8008
+    labels:
       - "traefik.enable=true"
       - "traefik.port=8008"
-      - "traefik.backend=web-server"
+      - "traefik.backend=web"
       - "traefik.frontend.entryPoints=http,https"
       - "traefik.frontend.rule=Host:www.zentour.net"
 
@@ -93,18 +93,18 @@ services:
 #      - "traefik.frontend.headers.STSIncludeSubdomains=true"
 #      - "traefik.frontend.headers.STSPreload=true"
 
-    wordpress-php-fpm:
-      env_file:
-        - .env
-      build:  conf/php-fpm
-      restart: always
-      volumes:
-        - wordpress:/var/www/html
-        - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
-        - ./data/wordpress/wp-content:/var/www/html/wp-content
-        - ./data/wordpress/phpinfo.php:/var/www/html/phpinfo.php
-        - ./conf/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/php-ini-overrides.ini
-        - ./conf/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+  wordpress-php-fpm:
+    env_file:
+      - .env
+    build:  conf/php-fpm
+    restart: always
+    volumes:
+      - wordpress:/var/www/html
+      - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
+      - ./data/wordpress/wp-content:/var/www/html/wp-content
+      - ./data/wordpress/phpinfo.php:/var/www/html/phpinfo.php
+      - ./conf/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/php-ini-overrides.ini
+      - ./conf/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
 
 volumes:
   wordpress:
