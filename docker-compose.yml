@@ -49,6 +49,8 @@ services:
       - "traefik.frontend.rule=Host:traefik.zentour.net"
 
     db:
+      env_file:
+        - .env
       image: mariadb:10
       container_name: mariadb
       restart: always
@@ -65,6 +67,8 @@ services:
         - "${MYSQL_PORT}:3306"
 
     web-server:
+      env_file:
+        - .env
       image: nginx:alpine
       restart: always
       container_name: nginx
@@ -77,7 +81,7 @@ services:
         - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
         - run_vol:/var/run
       ports:
-        - "${PORT}:8008"
+        - "${PORT}:8008" # was 80 but goes out through Traefik on https port
           labels:
       - "traefik.enable=true"
       - "traefik.port=8008"
@@ -90,6 +94,8 @@ services:
 #      - "traefik.frontend.headers.STSPreload=true"
 
     wordpress-php-fpm:
+      env_file:
+        - .env
       build:  conf/php-fpm
       restart: always
       container_name: php-fpm
