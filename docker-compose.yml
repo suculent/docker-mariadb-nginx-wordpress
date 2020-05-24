@@ -52,7 +52,6 @@ services:
       env_file:
         - .env
       image: mariadb:10
-      container_name: mariadb
       restart: always
       volumes:
         - ./data/mysql:/var/lib/mysql
@@ -71,7 +70,6 @@ services:
         - .env
       image: nginx:alpine
       restart: always
-      container_name: nginx
       volumes:
         - wordpress:/var/www/html
         - ./data/wordpress/wp-content:/var/www/html/wp-content
@@ -88,6 +86,8 @@ services:
       - "traefik.backend=web-server"
       - "traefik.frontend.entryPoints=http,https"
       - "traefik.frontend.rule=Host:www.zentour.net"
+
+# Enable HSTS when done...
 #      - "traefik.frontend.headers.forceSTSHeader=true"
 #      - "traefik.frontend.headers.STSSeconds=315360000"
 #      - "traefik.frontend.headers.STSIncludeSubdomains=true"
@@ -98,7 +98,6 @@ services:
         - .env
       build:  conf/php-fpm
       restart: always
-      container_name: php-fpm
       volumes:
         - wordpress:/var/www/html
         - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
