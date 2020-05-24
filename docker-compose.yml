@@ -53,6 +53,7 @@ services:
       - .env
     image: mariadb:10
     restart: always
+    container_name: mariadb
     volumes:
       - ./data/mysql:/var/lib/mysql
       - ./conf/mariadb/my.cnf:/etc/mysql/conf.d/settings.cnf
@@ -65,11 +66,12 @@ services:
     ports:
       - "${MYSQL_PORT}:3306"
 
-  web-server:
+  web:
     env_file:
       - .env
     image: nginx:alpine
     restart: always
+    container_name: nginx
     volumes:
       - wordpress:/var/www/html
       - ./data/wordpress/wp-content:/var/www/html/wp-content
@@ -98,6 +100,7 @@ services:
       - .env
     build:  conf/php-fpm
     restart: always
+    container_name: php-fpm
     volumes:
       - wordpress:/var/www/html
       - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
