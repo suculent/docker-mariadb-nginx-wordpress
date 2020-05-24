@@ -23,7 +23,7 @@ START 21.00
 * převod domény ze starých DNS serverů na Forpsi.com
 * nastavené nové IP adresy 46.36.37.63
 
-
+* Změna DNS otestována, zentour.net i www.zentour.net nyní odkazuje na nový server
 
 **Mail Server**
 

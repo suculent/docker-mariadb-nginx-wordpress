@@ -1,113 +1,56 @@
-###############################################################################
-# wordpres fpm docker-compose
-# Zerbinati Francesco
-# 17/01/18
-# mariadb + nginx + php-fpm + wordpress
-###############################################################################
+version: '2'
 
-version: '3'
 services:
-  traefik:
-    env_file:
-      - .env
-    image: traefik:v1.7.19-alpine
-    command:
-      - "--defaultentrypoints=http,https"
-      - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
-      - "--entrypoints=Name:https Address::443 Compress:true TLS"
-      - "--retry"
-      - "--api"
-      - "--docker"
-      - "--docker.domain=docker.localhost"
-      - "--docker.exposedbydefault=false"
-      - "--loglevel=WARNING"
-      - "--acme=true"
-      - "--acme.acmelogging=true"
-      - "--acme.storage=/traefik/acme.json"
-      - "--acme.entryPoint=https"
-      - "--acme.httpchallenge"
-      - "--acme.httpchallenge.entryPoint=http"
-      - "--acme.onHostRule=true"
-      - "--acme.email=zentour@icloud.com"
-      - "--acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
-      - "--acme.domains=www.zentour.net"
-    restart: unless-stopped
-    ports:
-      - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
-      - "443:443"  # The HTTPS port, ditto.
-      - "8080:8080" # Traefik port
-      # - "8888:8888" # Optionally other port (e.g. Adminr)
-    volumes:
-      # help: ./local-path:/docker-path
-      - /var/run/docker.sock:/var/run/docker.sock
-      #- /etc/letsencrypt/live/zentour.net:/cert
-      - ./traefik:/traefik
-    labels:
-      - "traefik.port=8080"
-      - "traefik.backend=traefik"
-      - "traefik.frontend.auth.basic.users=traefik:$$apr1$$JVrTyD7r$DwX82aghrfYFJXh.kFfbU."
-      - "traefik.frontend.rule=Host:traefik.zentour.net"
 
-  db:
-    env_file:
-      - .env
-    image: mariadb:10
-    restart: always
-    container_name: mariadb
-    volumes:
-      - ./data/mysql:/var/lib/mysql
-      - ./conf/mariadb/my.cnf:/etc/mysql/conf.d/settings.cnf
-      - ./conf/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    ports:
-      - "${MYSQL_PORT}:3306"
+# Debug and SQL management only
+#    adminer:
+#      image: adminer
+#      restart: always
+#      ports:
+#        - 9090:8080 # front:back
 
-  web:
-    env_file:
-      - .env
-    image: nginx:alpine
-    restart: always
-    container_name: nginx
-    volumes:
-      - wordpress:/var/www/html
-      - ./data/wordpress/wp-content:/var/www/html/wp-content
-      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./conf/nginx/cloudflare.conf:/etc/nginx/cloudflare.conf
-      - ./log/nginx/:/var/log/nginx/
-      - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
-      - run_vol:/var/run
-    ports:
-      - 8008:8008
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=8008"
-      - "traefik.backend=web"
-      - "traefik.frontend.entryPoints=http,https"
-      - "traefik.frontend.rule=Host:www.zentour.net"
+    db:
+      image: mariadb:10
+      container_name: mariadb
+      restart: always
+      volumes:
+        - ./data/mysql:/var/lib/mysql
+        - ./conf/mariadb/my.cnf:/etc/mysql/conf.d/settings.cnf
+        - ./conf/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      environment:
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      ports:
+        - "${MYSQL_PORT}:3306"
 
-# Enable HSTS when done...
-#      - "traefik.frontend.headers.forceSTSHeader=true"
-#      - "traefik.frontend.headers.STSSeconds=315360000"
-#      - "traefik.frontend.headers.STSIncludeSubdomains=true"
-#      - "traefik.frontend.headers.STSPreload=true"
+    web-server:
+      image: nginx:alpine
+      restart: always
+      container_name: nginx
+      volumes:
+        - wordpress:/var/www/html
+        - ./data/wordpress/wp-content:/var/www/html/wp-content
+        - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+        - ./conf/nginx/cloudflare.conf:/etc/nginx/cloudflare.conf
+        - ./log/nginx/:/var/log/nginx/
+        - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
+        - run_vol:/var/run
+      ports:
+        - "${PORT}:80"
 
-  wordpress-php-fpm:
-    env_file:
-      - .env
-    build:  conf/php-fpm
-    restart: always
-    container_name: php-fpm
-    volumes:
-      - wordpress:/var/www/html
-      - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
-      - ./data/wordpress/wp-content:/var/www/html/wp-content
-      - ./data/wordpress/phpinfo.php:/var/www/html/phpinfo.php
-      - ./conf/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/php-ini-overrides.ini
-      - ./conf/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    wordpress-php-fpm:
+      build:  conf/php-fpm
+      restart: always
+      container_name: php-fpm
+      volumes:
+        - wordpress:/var/www/html
+        - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
+        - ./data/wordpress/wp-content:/var/www/html/wp-content
+        - ./data/wordpress/phpinfo.php:/var/www/html/phpinfo.php
+        - ./conf/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/php-ini-overrides.ini
+        - ./conf/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
 
 volumes:
   wordpress:
