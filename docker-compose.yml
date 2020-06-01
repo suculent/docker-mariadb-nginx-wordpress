@@ -76,8 +76,9 @@ services:
         - "${WEB_PORT}:80"
       labels:
         - traefik.enable=true
-        #- traefik.http.middlewares.web-server-redirect-web-secure.redirectscheme.scheme=https
-        #- traefik.http.routers.web-server-web.middlewares=web-server-redirect-web-secure
+        - traefik.port=8000
+        - traefik.http.middlewares.web-server-redirect-web-secure.redirectscheme.scheme=https
+        - traefik.http.routers.web-server-web.middlewares=web-server-redirect-web-secure
         - traefik.http.routers.web.rule=Host(`www.zentour.net`)
         - traefik.http.routers.web-secure.rule=Host(`www.zentour.net`)
         - traefik.http.routers.web-secure.tls=true
