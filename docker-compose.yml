@@ -15,29 +15,29 @@ services:
 #      ports:
 #        - 9090:8080 # front:back
 
-    traefik:
-      env_file:
-        - .env
-      image: traefik:latest
-      restart: unless-stopped
-      ports:
-        - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
-        - "443:443"  # The HTTPS port, ditto.
-        - "8080:8080" # Traefik port
-        # - "8888:8888" # Optionally other port (e.g. Adminr)
-      volumes:
-        - ./traefik.yml:/etc/traefik/traefik.yml
-        - /var/run/docker.sock:/var/run/docker.sock
-        - ./cert:/cert
-        - ./traefik:/traefik
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.traefik.entrypoints=https"
-        - "traefik.http.routers.traefik.rule=Host(`traefik.zentour.net`)"
-        - "traefik.http.middlewares.traefik-auth.basicauth.users=USER:PASSWORD"
-        - "traefik.http.routers.traefik.middlewares=traefik-auth"
-        - "traefik.http.routers.traefik.service=api@internal"
-        - "traefik.http.routers.traefik.tls.certresolver=revolver"
+    # traefik:
+    #   env_file:
+    #     - .env
+    #   image: traefik:latest
+    #   restart: unless-stopped
+    #   ports:
+    #     - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
+    #     - "443:443"  # The HTTPS port, ditto.
+    #     - "8080:8080" # Traefik port
+    #     # - "8888:8888" # Optionally other port (e.g. Adminr)
+    #   volumes:
+    #     - ./traefik.yml:/etc/traefik/traefik.yml
+    #     - /var/run/docker.sock:/var/run/docker.sock
+    #     - ./cert:/cert
+    #     - ./traefik:/traefik
+    #   labels:
+    #     - "traefik.enable=true"
+    #     - "traefik.http.routers.traefik.entrypoints=https"
+    #     - "traefik.http.routers.traefik.rule=Host(`traefik.zentour.net`)"
+    #     - "traefik.http.middlewares.traefik-auth.basicauth.users=USER:PASSWORD"
+    #     - "traefik.http.routers.traefik.middlewares=traefik-auth"
+    #     - "traefik.http.routers.traefik.service=api@internal"
+    #     - "traefik.http.routers.traefik.tls.certresolver=revolver"
 
     db:
       networks:
@@ -89,8 +89,6 @@ services:
         #- "traefik.http.routers.www.middlewares=www-redirectregex" 
         #- "traefik.http.routers.www.service=frontend"
         #- "traefik.http.services.www.loadbalancer.server.port=80"
-        
-        
         #- traefik.http.middlewares.web-server-redirect-web-secure.redirectscheme.scheme=https
         #- traefik.http.routers.web-server-web.middlewares=web-server-redirect-web-secure
         #- traefik.http.routers.web-secure.rule=Host(`www.zentour.net`)

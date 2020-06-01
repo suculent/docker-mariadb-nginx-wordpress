@@ -36,3 +36,21 @@ KONEC 23:15
 
 Už toho mám dost, server/loadbalancer nenabíhá, nevim kde je problém, jsem při neděli večer docela unavenej.
 
+
+### 1/06/2020
+
+START 21.30
+
+**Web Server**
+
+* Všechno znova, rozchození aktualizované verze Wordpressu bez HTTPS.
+
+LOG 23.42
+
+END ??.??
+
+
+### TODO
+
+* Zkusit rozchodit HTTPS přes acme.sh a vykašlat se na Traefik
+* Dodělat volumes nebo opravit tak, aby fungovaly zápisy
