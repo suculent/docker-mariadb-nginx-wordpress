@@ -10,10 +10,13 @@ api:
   insecure: true
 
 entryPoints:
-  web:
+  http:
     address: ":80"
+    #redirections:
+    #   entryPoint:
+    #     to: https
 
-  web-secure:
+  https:
     address: ":443"
 
 certificatesResolvers:
