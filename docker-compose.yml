@@ -15,6 +15,31 @@ services:
 #      ports:
 #        - 9090:8080 # front:back
 
+    reverse-proxy:
+        env_file:
+          - .env
+        image: traefik:v1.7.19-alpine
+        command:
+          - "--defaultentrypoints=http,https"
+          - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
+          - "--entrypoints=Name:https Address::443 Compress:true TLS"
+          - "--retry"
+          - "--api"
+          - "--docker"
+          - "--docker.domain=docker.localhost"
+          - "--docker.exposedbydefault=false"
+          - "--loglevel=DEBUG"
+          - "--acme=true"
+          - "--acme.acmelogging=true"
+          - "--acme.storage=/traefik/acme.json"
+          - "--acme.entryPoint=https"
+          - "--acme.httpchallenge"
+          - "--acme.httpchallenge.entryPoint=http"
+          - "--acme.onHostRule=true"
+          - "--acme.email=matej@keyguru.eu"
+          - "--acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
+          - "--acme.domains=zentour.net,www.zentour.net"
+
     db:
       networks:
         - internal
@@ -54,6 +79,16 @@ services:
       ports:
         - "${WEB_PORT}:80"
         #- "80:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=8080"
+      - "traefik.backend=web"
+      - "traefik.frontend.entryPoints=http,https"
+      - "traefik.frontend.rule=Host:zentour.net"
+      #- "traefik.frontend.headers.forceSTSHeader=true"
+      #- "traefik.frontend.headers.STSSeconds=315360000"
+      #- "traefik.frontend.headers.STSIncludeSubdomains=true"
+      #- "traefik.frontend.headers.STSPreload=true"
 
     wordpress-php-fpm:
       networks:
