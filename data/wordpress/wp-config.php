@@ -37,7 +37,7 @@ define('DB_NAME', 'zentournet');
 define('DB_USER', 'zentournet');
 
 /** Password del database MySQL */
-define('DB_PASSWORD', 'npaiykHir6q');
+define('DB_PASSWORD', 'PQsuPoG4Qzz');
 
 /** Hostname MySQL  */
 define('DB_HOST', 'mariadb');
