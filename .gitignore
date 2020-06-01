@@ -5,3 +5,5 @@ data/mysql/*
 data/wordpress/wp-content/*
 !data/mysql/.gitkeep
 !data/wordpress/wp-content/.gitkeep
+
+traefik/acme.json
