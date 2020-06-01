@@ -96,7 +96,7 @@ services:
         - "${WEB_PORT}:80"
       labels:
         - "traefik.enable=true"
-        - "traefik.port=${WEB_PORT}"
+        - "traefik.port=80"
         - "traefik.backend=web"
         - "traefik.frontend.entryPoints=http,https"
         - "traefik.frontend.rule=Host:www.zentour.net"
