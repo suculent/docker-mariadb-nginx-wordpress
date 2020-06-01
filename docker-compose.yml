@@ -63,6 +63,7 @@ services:
           - db
         networks:
           - nat
+          - internal
         image: wordpress:php7.2-fpm-alpine
         ports:
           - "8000:80"
