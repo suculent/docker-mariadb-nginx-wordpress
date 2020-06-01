@@ -24,3 +24,14 @@ certificatesResolvers:
       httpChallenge:
         # used during the challenge
         entryPoint: web
+
+http:
+  routers:
+    zentour:
+      rule: "Host(`zentour.net`)"
+      tls:
+        certResolver: revolver
+        domains:
+          - main: "zentour.net"
+            sans:
+              - "*.zentour.net"
