@@ -2,8 +2,10 @@ log/nginx/*
 !log/nginx/.gitkeep
 
 data/mysql/*
+www/*
 data/wordpress/wp-content/*
-!data/mysql/.gitkeep
+!data/mysql/.keep
+!www/.keep
 !data/wordpress/wp-content/.gitkeep
 
 traefik/acme.json
