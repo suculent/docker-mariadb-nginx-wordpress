@@ -18,7 +18,7 @@ services:
     traefik:
       env_file:
         - .env
-      image: traefik:v1.7.19-alpine
+      image: traefik:alpine
       command:
         - "--defaultentrypoints=http,https"
         - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
@@ -28,7 +28,7 @@ services:
         - "--docker"
         - "--docker.domain=docker.localhost"
         - "--docker.exposedbydefault=false"
-        - "--loglevel=WARNING"
+        - "--loglevel=DEBUG"
         - "--acme=true"
         - "--acme.acmelogging=true"
         - "--acme.storage=/traefik/acme.json"
@@ -46,7 +46,6 @@ services:
         - "8080:8080" # Traefik port
         # - "8888:8888" # Optionally other port (e.g. Adminr)
       volumes:
-        # help: ./local-path:/docker-path
         - /var/run/docker.sock:/var/run/docker.sock
         - ./cert:/cert
         - ./traefik:/traefik
