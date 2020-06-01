@@ -52,8 +52,8 @@ services:
         - ./log/nginx/:/var/log/nginx/
         - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
       ports:
-        #- "${WEB_PORT}:80"
-        - "80:80"
+        - "${WEB_PORT}:80"
+        #- "80:80"
 
     wordpress-php-fpm:
       networks:
