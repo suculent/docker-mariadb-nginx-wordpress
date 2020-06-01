@@ -37,6 +37,7 @@ services:
         - "traefik.http.middlewares.traefik-auth.basicauth.users=USER:PASSWORD"
         - "traefik.http.routers.traefik.middlewares=traefik-auth"
         - "traefik.http.routers.traefik.service=api@internal"
+        - "traefik.http.routers.traefik.tls.certresolver=revolver"
 
     db:
       networks:
@@ -79,13 +80,16 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.www.rule=Host(`www.zentour.net`)"
-        - "traefik.http.middlewares.www-redirectregex.redirectregex.regex=https://(.*)/.well-known/(card|cal)dav"
-        - "traefik.http.middlewares.www-redirectregex.redirectregex.replacement=https://$$1/remote.php/dav/"
-        - "traefik.http.middlewares.www-redirectregex.redirectregex.permanent=true"
-        - "traefik.http.routers.www.middlewares=www-redirectregex" 
-        #- "traefik.http.routers.www.service=frontend"
-        - "traefik.http.services.www.loadbalancer.server.port=80"
         - "traefik.docker.network=nat"
+        - "traefik.http.routers.www.service=web-server-zentournet"
+        - "traefik.http.services.www.loadbalancer.server.port=7000"
+        #- "traefik.http.middlewares.www-redirectregex.redirectregex.regex=https://(.*)/.well-known/(card|cal)dav"
+        #- "traefik.http.middlewares.www-redirectregex.redirectregex.replacement=https://$$1/remote.php/dav/"
+        #- "traefik.http.middlewares.www-redirectregex.redirectregex.permanent=true"
+        #- "traefik.http.routers.www.middlewares=www-redirectregex" 
+        #- "traefik.http.routers.www.service=frontend"
+        #- "traefik.http.services.www.loadbalancer.server.port=80"
+        
         
         #- traefik.http.middlewares.web-server-redirect-web-secure.redirectscheme.scheme=https
         #- traefik.http.routers.web-server-web.middlewares=web-server-redirect-web-secure

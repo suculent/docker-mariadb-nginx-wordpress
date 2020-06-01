@@ -19,6 +19,9 @@ entryPoints:
   https:
     address: ":443"
 
+  sidekick:
+    address: ":8000"
+
 certificatesResolvers:
   revolver:
     acme:
@@ -26,15 +29,4 @@ certificatesResolvers:
       storage: acme.json
       httpChallenge:
         # used during the challenge
-        entryPoint: web
-
-http:
-  routers:
-    zentour:
-      rule: "Host(`zentour.net`)"
-      tls:
-        certResolver: revolver
-        domains:
-          - main: "zentour.net"
-            sans:
-              - "*.zentour.net"
+        entryPoint: http
