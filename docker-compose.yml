@@ -78,3 +78,7 @@ services:
           - wordpress:/var/www/html
         ports:
           - "${WEB_PORT}:80"
+
+volumes:
+  wordpress:
+  db:
