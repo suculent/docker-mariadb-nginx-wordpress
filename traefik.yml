@@ -17,7 +17,7 @@ entryPoints:
     address: ":443"
 
 certificatesResolvers:
-  sample:
+  revolver:
     acme:
       email: zentour@icloud.com
       storage: acme.json
