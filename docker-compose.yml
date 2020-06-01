@@ -80,7 +80,6 @@ services:
         - traefik.http.routers.web-server-web.middlewares=web-server-redirect-web-secure
         - traefik.http.routers.web-server-web.rule=Host(`www.zentour.net`)
         - traefik.http.routers.web-server-web-secure.rule=Host(`www.zentour.net`)
-        - traefik.http.routers.web-server-web-secure.tls.certresolver=mytlschallenge
         - traefik.http.routers.web-server-web-secure.tls=true
         # if you have multiple ports exposed on the service, specify port in the web-secure service
         - traefik.http.services.web-server-web-secure.loadbalancer.server.port=${WEB_PORT}
