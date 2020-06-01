@@ -75,11 +75,17 @@ services:
       ports:
         - "${WEB_PORT}:80"
       labels:
-        - "traefik.enable=true"
-        - "traefik.port=80"
-        - "traefik.backend=web"
-        - "traefik.frontend.entryPoints=http,https"
-        - "traefik.frontend.rule=Host:www.zentour.net"
+        - traefik.enable=true
+        - traefik.http.middlewares.mywebserver-redirect-web-secure.redirectscheme.scheme=https
+        - traefik.http.routers.mywebserver-web.middlewares=mywebserver-redirect-web-secure
+        - traefik.http.routers.mywebserver-web.rule=Host(`www.zentour.net`)
+        - traefik.http.routers.mywebserver-web.entrypoints=web
+        - traefik.http.routers.mywebserver-web-secure.rule=Host(`www.zentour.net`)
+        - traefik.http.routers.mywebserver-web-secure.tls.certresolver=mytlschallenge
+        - traefik.http.routers.mywebserver-web-secure.tls=true
+        - traefik.http.routers.mywebserver-web-secure.entrypoints=web-secure
+        # if you have multiple ports exposed on the service, specify port in the web-secure service
+        - traefik.http.services.mywebserver-web-secure.loadbalancer.server.port=${WEB_PORT}
 
     wordpress-php-fpm:
       networks:
