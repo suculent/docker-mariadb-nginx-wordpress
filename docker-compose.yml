@@ -27,8 +27,8 @@ services:
           - "--api"
           - "--docker"
           - "--docker.domain=docker.localhost"
-          - "--docker.exposedbydefault=true"
-          - "--loglevel=DEBUG"
+          - "--docker.exposedbydefault=false"
+          - "--loglevel=WARNING"
           - "--acme=true"
           - "--acme.acmelogging=true"
           - "--acme.storage=/traefik/acme.json"
@@ -44,6 +44,7 @@ services:
           - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
           - "443:443"  # The HTTPS port, ditto.
           - "8080:8080" # Traefik port
+          - "8000:8000" # Developer
         volumes:
           # help: ./local-path:/docker-path
           - /var/run/docker.sock:/var/run/docker.sock
@@ -99,9 +100,9 @@ services:
         - traefik.backend=web-server
         - traefik.frontend.rule=Host:www.zentour.net
         - traefik.frontend.entryPoints=http,https
-        #- traefik.frontend.headers.SSLRedirect=false
-        #- traefik.frontend.headers.SSLForceHost=true
-        #- traefik.frontend.headers.SSLHost=www.zentour.net
+        - traefik.frontend.headers.SSLRedirect=false
+        - traefik.frontend.headers.SSLForceHost=true
+        - traefik.frontend.headers.SSLHost=www.zentour.net
         #- traefik.frontend.headers.STSSeconds=315360000
         #- traefik.frontend.headers.forceSTSHeader=true
         #- traefik.frontend.headers.STSIncludeSubdomains=true
