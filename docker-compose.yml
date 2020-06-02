@@ -27,7 +27,7 @@ services:
           - "--api"
           - "--docker"
           - "--docker.domain=docker.localhost"
-          - "--docker.exposedbydefault=false"
+          - "--docker.exposedbydefault=true"
           - "--loglevel=DEBUG"
           - "--acme=true"
           - "--acme.acmelogging=true"
@@ -38,7 +38,7 @@ services:
           - "--acme.onHostRule=true"
           - "--acme.email=matej@keyguru.eu"
           - "--acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
-          - "--acme.domains=zentour.net,www.zentour.net"
+          - "--acme.domains=zentour.net,traefik.zentour.net,www.zentour.net"
         restart: unless-stopped
         ports:
           - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
@@ -113,7 +113,7 @@ services:
         - nat
       env_file:
         - .env
-      build:  conf/php-fpm
+      build: conf/php-fpm
       restart: always
       container_name: php-fpm
       ports: 
