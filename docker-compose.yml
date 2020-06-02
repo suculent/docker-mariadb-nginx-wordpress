@@ -97,11 +97,11 @@ services:
         - traefik.enable=true
         - traefik.port=80
         - traefik.backend=web-server
-        - traefik.frontend.rule=Host:zentour.net
+        - traefik.frontend.rule=Host:www.zentour.net
         - traefik.frontend.entryPoints=http,https
-        - traefik.frontend.headers.SSLRedirect=false
-        - traefik.frontend.headers.SSLForceHost=true
-        - traefik.frontend.headers.SSLHost=www.zentour.net
+        #- traefik.frontend.headers.SSLRedirect=false
+        #- traefik.frontend.headers.SSLForceHost=true
+        #- traefik.frontend.headers.SSLHost=www.zentour.net
         #- traefik.frontend.headers.STSSeconds=315360000
         #- traefik.frontend.headers.forceSTSHeader=true
         #- traefik.frontend.headers.STSIncludeSubdomains=true
