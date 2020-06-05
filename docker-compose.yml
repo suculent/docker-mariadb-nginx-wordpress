@@ -44,8 +44,6 @@ services:
           - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
           - "443:443"  # The HTTPS port, ditto.
           - "8080:8080" # Traefik port
-          - "8000:8000" # Developer
-          - "9000:9000" # FPM
         volumes:
           # help: ./local-path:/docker-path
           - /var/run/docker.sock:/var/run/docker.sock
