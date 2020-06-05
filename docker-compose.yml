@@ -38,7 +38,7 @@ services:
           - "--acme.onHostRule=true"
           - "--acme.email=matej@keyguru.eu"
           - "--acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
-          - "--acme.domains=zentour.net,traefik.zentour.net,www.zentour.net"
+          - "--acme.domains=zentour.net,traefik.zentour.net,www.zentour.net,wordpress.zentour.net"
         restart: unless-stopped
         ports:
           - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
@@ -93,9 +93,9 @@ services:
         - php-fpm
       labels:
         - traefik.enable=true
-        - traefik.port=80
+        - traefik.port=8000
         - traefik.backend=web
-        - traefik.frontend.rule=Host:www.zentour.net
+        - traefik.frontend.rule=Host:wordpress.zentour.net
         - traefik.frontend.entryPoints=http,https
         - traefik.frontend.headers.SSLRedirect=false
         #- traefik.frontend.headers.SSLForceHost=true
@@ -114,7 +114,7 @@ services:
       build: conf/php-fpm
       restart: always
       ports: 
-        - "9000"
+        - "9000:9000"
       volumes:
         - ./www:/var/www/html
         - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
@@ -122,3 +122,10 @@ services:
         - ./data/wordpress/phpinfo.php:/var/www/html/phpinfo.php
         - ./conf/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/php-ini-overrides.ini
         - ./conf/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      labels:
+        - traefik.enable=true
+        - traefik.port=80
+        - traefik.backend=web
+        - traefik.frontend.rule=Host:www.zentour.net
+        - traefik.frontend.entryPoints=http,https
+        - traefik.frontend.headers.SSLRedirect=false
