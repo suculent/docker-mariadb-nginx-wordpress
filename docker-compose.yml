@@ -54,8 +54,6 @@ services:
           - "traefik.frontend.rule=Host:traefik.zentour.net"
 
     mariadb:
-      networks:
-        - internal
       env_file:
         - .env
       image: mariadb:10
@@ -73,9 +71,6 @@ services:
         - "${MYSQL_PORT}:3306"
 
     web:
-      networks:
-        - internal
-        - nat
       env_file:
         - .env
       image: nginx:alpine
@@ -106,15 +101,12 @@ services:
         #- traefik.frontend.headers.STSPreload=true
 
     php-fpm:
-      networks:
-        - internal
-        - nat
       env_file:
         - .env
       build: conf/php-fpm
       restart: always
       ports: 
-        - "9000"
+        - 9000:90
       volumes:
         - ./www:/var/www/html
         - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
