@@ -28,7 +28,7 @@ services:
           - "--docker"
           - "--docker.domain=docker.localhost"
           - "--docker.exposedbydefault=false"
-          - "--loglevel=WARNING"
+          - "--loglevel=DEBUG"
           - "--acme=true"
           - "--acme.acmelogging=true"
           - "--acme.storage=/traefik/acme.json"
@@ -45,6 +45,7 @@ services:
           - "443:443"  # The HTTPS port, ditto.
           - "8080:8080" # Traefik port
           - "8000:8000" # Developer
+          - "9000:9000" # FPM
         volumes:
           # help: ./local-path:/docker-path
           - /var/run/docker.sock:/var/run/docker.sock
@@ -101,8 +102,8 @@ services:
         - traefik.frontend.rule=Host:www.zentour.net
         - traefik.frontend.entryPoints=http,https
         - traefik.frontend.headers.SSLRedirect=false
-        - traefik.frontend.headers.SSLForceHost=true
-        - traefik.frontend.headers.SSLHost=www.zentour.net
+        #- traefik.frontend.headers.SSLForceHost=true
+        #- traefik.frontend.headers.SSLHost=www.zentour.net
         #- traefik.frontend.headers.STSSeconds=315360000
         #- traefik.frontend.headers.forceSTSHeader=true
         #- traefik.frontend.headers.STSIncludeSubdomains=true
@@ -118,7 +119,7 @@ services:
       restart: always
       container_name: php-fpm
       ports: 
-        - "9000"
+        - "9000:9000"
       volumes:
         - ./www:/var/www/html
         - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
