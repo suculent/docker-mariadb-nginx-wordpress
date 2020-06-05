@@ -18,7 +18,7 @@ services:
     reverse-proxy:
         env_file:
           - .env
-        image: traefik:v1.7.19-alpine
+        image: traefik:v1.7.12-alpine
         command:
           - "--defaultentrypoints=http,https"
           - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
@@ -45,9 +45,7 @@ services:
           - "443:443"  # The HTTPS port, ditto.
           - "8080:8080" # Traefik port
         volumes:
-          # help: ./local-path:/docker-path
           - /var/run/docker.sock:/var/run/docker.sock
-          #- /etc/letsencrypt/live/zentour.net:/cert
           - ./traefik:/traefik
         labels:
           - "traefik.port=8080"
@@ -75,7 +73,7 @@ services:
       ports:
         - "${MYSQL_PORT}:3306"
 
-    web-server:
+    web:
       networks:
         - internal
         - nat
@@ -93,10 +91,12 @@ services:
         - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
       ports:
         - "8000:80"
+      depends_on: 
+        - php-fpm
       labels:
         - traefik.enable=true
         - traefik.port=80
-        - traefik.backend=web-server
+        - traefik.backend=web
         - traefik.frontend.rule=Host:www.zentour.net
         - traefik.frontend.entryPoints=http,https
         - traefik.frontend.headers.SSLRedirect=false
@@ -107,7 +107,7 @@ services:
         #- traefik.frontend.headers.STSIncludeSubdomains=true
         #- traefik.frontend.headers.STSPreload=true
 
-    wordpress-php-fpm:
+    php-fpm:
       networks:
         - internal
         - nat
@@ -115,7 +115,6 @@ services:
         - .env
       build: conf/php-fpm
       restart: always
-      container_name: php-fpm
       ports: 
         - "9000"
       volumes:
