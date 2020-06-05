@@ -47,10 +47,18 @@ START 21.30
 
 LOG 23.42
 
-END ??.??
+* Prázdná Wordpress-site běží na adrese http://www.zentour.net:8080, login zentour heslo H7VO#vEMERyP6BiGpK
 
+* Příprava branche s load-balancerem/SSL
+
+END 1.30 
+
+SUBTOTAL 6h
 
 ### TODO
 
-* Zkusit rozchodit HTTPS přes acme.sh a vykašlat se na Traefik
-* Dodělat volumes nebo opravit tak, aby fungovaly zápisy
+[ ] Dodělat SSL přes traefik s auto-restartem (traefik musí jít asi na jiný port než 8080 nebo proč jinde ten nginx nejde?)
+
+[ ] Rozchodit mailserver nebo jak je to s tím Hukotem?
+
+[x] Dodělat volumes nebo opravit tak, aby fungovaly zápisy
