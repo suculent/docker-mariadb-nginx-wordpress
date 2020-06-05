@@ -81,7 +81,7 @@ services:
       build: conf/php-fpm
       restart: always
       ports: 
-        - "9000:9000"
+        - "9000"
       volumes:
         - ./www:/var/www/html
         - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
