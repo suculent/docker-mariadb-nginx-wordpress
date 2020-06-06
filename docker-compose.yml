@@ -15,43 +15,43 @@ services:
 #      ports:
 #        - 9090:8080 # front:back
 
-    reverse-proxy:
-        env_file:
-          - .env
-        image: traefik:v1.7.12-alpine
-        command:
-          - "--defaultentrypoints=http,https"
-          - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
-          - "--entrypoints=Name:https Address::443 Compress:true TLS"
-          - "--retry"
-          - "--api"
-          - "--docker"
-          - "--docker.domain=docker.localhost"
-          - "--docker.exposedbydefault=false"
-          - "--loglevel=DEBUG"
-          - "--acme=true"
-          - "--acme.acmelogging=true"
-          - "--acme.storage=/traefik/acme.json"
-          - "--acme.entryPoint=https"
-          - "--acme.httpchallenge"
-          - "--acme.httpchallenge.entryPoint=http"
-          - "--acme.onHostRule=true"
-          - "--acme.email=matej@keyguru.eu"
-          - "--acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
-          - "--acme.domains=zentour.net,traefik.zentour.net,www.zentour.net,wordpress.zentour.net"
-        restart: unless-stopped
-        ports:
-          - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
-          - "443:443"  # The HTTPS port, ditto.
-          - "8080:8080" # Traefik port
-        volumes:
-          - /var/run/docker.sock:/var/run/docker.sock
-          - ./traefik:/traefik
-        labels:
-          - "traefik.port=8080"
-          - "traefik.backend=traefik"
-          #- "traefik.frontend.auth.basic.users=traefik:$$apr1$$JVrTyD7r$DwX82aghrfYFJXh.kFfbU."
-          - "traefik.frontend.rule=Host:traefik.zentour.net"
+    # reverse-proxy:
+    #     env_file:
+    #       - .env
+    #     image: traefik:v1.7.12-alpine
+    #     command:
+    #       - "--defaultentrypoints=http,https"
+    #       - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
+    #       - "--entrypoints=Name:https Address::443 Compress:true TLS"
+    #       - "--retry"
+    #       - "--api"
+    #       - "--docker"
+    #       - "--docker.domain=docker.localhost"
+    #       - "--docker.exposedbydefault=false"
+    #       - "--loglevel=DEBUG"
+    #       - "--acme=true"
+    #       - "--acme.acmelogging=true"
+    #       - "--acme.storage=/traefik/acme.json"
+    #       - "--acme.entryPoint=https"
+    #       - "--acme.httpchallenge"
+    #       - "--acme.httpchallenge.entryPoint=http"
+    #       - "--acme.onHostRule=true"
+    #       - "--acme.email=matej@keyguru.eu"
+    #       - "--acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
+    #       - "--acme.domains=zentour.net,traefik.zentour.net,www.zentour.net,wordpress.zentour.net"
+    #     restart: unless-stopped
+    #     ports:
+    #       - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
+    #       - "443:443"  # The HTTPS port, ditto.
+    #       - "8080:8080" # Traefik port
+    #     volumes:
+    #       - /var/run/docker.sock:/var/run/docker.sock
+    #       - ./traefik:/traefik
+    #     labels:
+    #       - "traefik.port=8080"
+    #       - "traefik.backend=traefik"
+    #       #- "traefik.frontend.auth.basic.users=traefik:$$apr1$$JVrTyD7r$DwX82aghrfYFJXh.kFfbU."
+    #       - "traefik.frontend.rule=Host:traefik.zentour.net"
 
     mariadb:
       env_file:
