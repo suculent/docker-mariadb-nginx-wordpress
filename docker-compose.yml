@@ -3,6 +3,8 @@ version: '2'
 networks:
   core-infra:
     external: true
+  internal:
+    external: false
 
 services:
 
@@ -14,6 +16,8 @@ services:
 #        - 9090:8080 # front:back
 
     db:
+      networks:
+        - internal
       image: mariadb:10
       container_name: mariadb
       restart: always
@@ -32,6 +36,7 @@ services:
     web-server:
       networks:
         - core-infra
+        - internal
       image: nginx:alpine
       restart: always
       container_name: frontend
@@ -47,6 +52,9 @@ services:
         - 80:80
 
     wordpress-php-fpm:
+      networks:
+        - core-infra
+        - internal
       build:  conf/php-fpm
       restart: always
       container_name: php-fpm
