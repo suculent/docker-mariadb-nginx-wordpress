@@ -1,11 +1,5 @@
 version: '2'
 
-networks:
-  nat:
-    external: true
-  internal:
-    external: false
-
 services:
 
 # Debug and SQL management only
@@ -15,48 +9,9 @@ services:
 #      ports:
 #        - 9090:8080 # front:back
 
-    # reverse-proxy:
-    #     env_file:
-    #       - .env
-    #     image: traefik:v1.7.12-alpine
-    #     command:
-    #       - "--defaultentrypoints=http,https"
-    #       - "--entrypoints=Name:http Address::80 Redirect.EntryPoint:https"
-    #       - "--entrypoints=Name:https Address::443 Compress:true TLS"
-    #       - "--retry"
-    #       - "--api"
-    #       - "--docker"
-    #       - "--docker.domain=docker.localhost"
-    #       - "--docker.exposedbydefault=false"
-    #       - "--loglevel=DEBUG"
-    #       - "--acme=true"
-    #       - "--acme.acmelogging=true"
-    #       - "--acme.storage=/traefik/acme.json"
-    #       - "--acme.entryPoint=https"
-    #       - "--acme.httpchallenge"
-    #       - "--acme.httpchallenge.entryPoint=http"
-    #       - "--acme.onHostRule=true"
-    #       - "--acme.email=matej@keyguru.eu"
-    #       - "--acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
-    #       - "--acme.domains=zentour.net,traefik.zentour.net,www.zentour.net,wordpress.zentour.net"
-    #     restart: unless-stopped
-    #     ports:
-    #       - "80:80"   # The HTTP port, should be 80 outside (does not collide on empty box)
-    #       - "443:443"  # The HTTPS port, ditto.
-    #       - "8080:8080" # Traefik port
-    #     volumes:
-    #       - /var/run/docker.sock:/var/run/docker.sock
-    #       - ./traefik:/traefik
-    #     labels:
-    #       - "traefik.port=8080"
-    #       - "traefik.backend=traefik"
-    #       #- "traefik.frontend.auth.basic.users=traefik:$$apr1$$JVrTyD7r$DwX82aghrfYFJXh.kFfbU."
-    #       - "traefik.frontend.rule=Host:traefik.zentour.net"
-
-    mariadb:
-      env_file:
-        - .env
+    db:
       image: mariadb:10
+      container_name: mariadb
       restart: always
       volumes:
         - ./data/mysql:/var/lib/mysql
@@ -70,54 +25,36 @@ services:
       ports:
         - "${MYSQL_PORT}:3306"
 
-    web:
-      env_file:
-        - .env
+    web-server:
       image: nginx:alpine
       restart: always
+      container_name: frontend
       volumes:
-        - ./www:/var/www/html
+        - wordpress:/var/www/html
         - ./data/wordpress/wp-content:/var/www/html/wp-content
         - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
         - ./conf/nginx/cloudflare.conf:/etc/nginx/cloudflare.conf
         - ./log/nginx/:/var/log/nginx/
         - ./conf/nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
+        - run_vol:/var/run
       ports:
-        - "8080:80"
-      depends_on: 
-        - php-fpm
-      labels:
-        - traefik.enable=true
-        - traefik.port=8000
-        - traefik.backend=web
-        - traefik.frontend.rule=Host:wordpress.zentour.net
-        - traefik.frontend.entryPoints=http,https
-        - traefik.frontend.headers.SSLRedirect=false
-        #- traefik.frontend.headers.SSLForceHost=true
-        #- traefik.frontend.headers.SSLHost=www.zentour.net
-        #- traefik.frontend.headers.STSSeconds=315360000
-        #- traefik.frontend.headers.forceSTSHeader=true
-        #- traefik.frontend.headers.STSIncludeSubdomains=true
-        #- traefik.frontend.headers.STSPreload=true
+        - "${PORT}:80"
 
-    php-fpm:
-      env_file:
-        - .env
-      build: conf/php-fpm
+    wordpress-php-fpm:
+      build:  conf/php-fpm
       restart: always
-      ports: 
-        - 9000
+      container_name: php-fpm
       volumes:
-        - ./www:/var/www/html
+        - wordpress:/var/www/html
         - ./data/wordpress/wp-config.php:/var/www/html/wp-config.php
         - ./data/wordpress/wp-content:/var/www/html/wp-content
         - ./data/wordpress/phpinfo.php:/var/www/html/phpinfo.php
         - ./conf/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/php-ini-overrides.ini
         - ./conf/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
-      labels:
-        - traefik.enable=true
-        - traefik.port=80
-        - traefik.backend=web
-        - traefik.frontend.rule=Host:www.zentour.net
-        - traefik.frontend.entryPoints=http,https
-        - traefik.frontend.headers.SSLRedirect=false
+
+volumes:
+  wordpress:
+  run_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

@@ -1,0 +1,67 @@
+################################################################
+# Global configuration
+################################################################
+
+# MUST be false in production
+debug = true
+sendAnonymousUsage = true
+
+# Log level (more is DEBUG)
+logLevel = "ERROR"
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints.http.auth.basic]
+  users = ["traefik:$$apr1$$.lkTRZ/z$$NxWSmnjMPQuqpDqJFebhU/"]
+
+################################################################
+# Entrypoints configuration
+################################################################
+
+# Entrypoints definition
+#
+[entryPoints]
+
+  [entryPoints.http]
+    address = ":80"
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+
+  [entryPoints.https]
+    address = ":443"
+    [entryPoints.https.tls]
+      [[entryPoints.https.tls.certificates]]
+      certFile = "/cert/cert.pem"
+      keyFile = "/cert/privkey.pem"
+
+[retry]
+
+[api]
+[ping]
+
+################################################################
+# Docker configuration backend
+################################################################
+
+# Enable Docker configuration backend
+[docker]
+  domain = "zentour.net"
+  watch = true
+  exposedByDefault = false
+  filename = "/traefik/rules.toml"
+
+[acme]
+  email = "zentour@icloud.com"
+  storage = "/traefik/acme.json"
+  entryPoint = "https"
+  onHostRule = true
+  caServer = "https://acme-v02.api.letsencrypt.org/directory"
+[acme.httpChallenge]
+  entryPoint = "http"
+
+[[acme.domains]]
+  main = "zentour.net"
+  sans = [ "www.zentour.net" ]
+
+################################################################
+# Override entrypoints in frontends
+################################################################
