@@ -15,6 +15,14 @@ services:
 #      ports:
 #        - 9090:8080 # front:back
 
+    proxy:
+      image: nginx:alpine
+      networks:
+        - internal
+        - core-infra
+      ports:
+        - "80:80"
+
     db:
       networks:
         - internal
