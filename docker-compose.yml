@@ -22,6 +22,10 @@ services:
         - core-infra
       ports:
         - "80:80"
+      volumes:
+        - ./conf/proxy/nginx.conf:/etc/nginx/nginx.conf
+        - ./log/proxy/:/var/log/nginx/
+        - ./conf/proxy/sites/default.conf:/etc/nginx/conf.d/default.conf
 
     db:
       networks:
