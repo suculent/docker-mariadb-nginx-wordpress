@@ -81,7 +81,7 @@ Ping funguje i lokálně, curl vrací connection rejected.
     root@zentour:~/zentour.net# curl http://192.168.64.2:8080/
     curl: (7) Failed to connect to 192.168.64.2 port 8080: Connection refused
 
-
+Už to skoro jde, akorát při odstranění 8080 a SSL redirectu jsou obrázky servované z http://:8080 a to nejde...
 
 3:22
 
