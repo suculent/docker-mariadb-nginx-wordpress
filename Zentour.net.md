@@ -62,3 +62,20 @@ SUBTOTAL 6h
 [ ] Rozchodit mailserver nebo jak je to s tím Hukotem?
 
 [x] Dodělat volumes nebo opravit tak, aby fungovaly zápisy
+
+# ACME.sh
+
+Create certificate (does not work witnout --alpn on port 80, does not work when port is busy):
+
+    acme.sh --alpn --standalone --issue -d www.zentour.net
+
+
+    [Sun Jun  7 01:47:58 CEST 2020] Your cert key is in  /root/.acme.sh/www.zentour.net/www.zentour.net.key 
+    [Sun Jun  7 01:47:58 CEST 2020] The intermediate CA cert is in  /root/.acme.sh/www.zentour.net/ca.cer 
+    [Sun Jun  7 01:47:58 CEST 2020] And the full chain certs is there:  /root/.acme.sh/www.zentour.net/fullchain.cer 
+
+Install/Reload (will change certificate internal format to pem):
+
+    acme.sh --install-cert -d www.zentour.net \
+        --key-file       /root/zentour.net/cert/key.pem  \
+        --fullchain-file /root/zentour.net/cert/cert.pem
