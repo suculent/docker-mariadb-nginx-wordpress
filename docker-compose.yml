@@ -25,10 +25,8 @@ services:
       volumes:
         - ./conf/proxy/nginx.conf:/etc/nginx/nginx.conf
         - ./log/proxy/:/var/log/nginx/
-        - ./cert/cert.pem:/etc/nginx/cert.pem
-        - ./cert/key.pem:/etc/nginx/key.pem
+        - ./cert:/etc/nginx/ssl
         - ./conf/proxy/sites/default.conf:/etc/nginx/conf.d/default.conf
-        
 
     mariadb:
       networks:
