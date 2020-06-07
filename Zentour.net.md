@@ -85,6 +85,8 @@ Už to skoro jde, akorát při odstranění 8080 a SSL redirectu jsou obrázky s
 
 3:22
 
+4:05 It works!
+
 ### TODO
 
 [ ] SSL proxy (částečně už funguje)
