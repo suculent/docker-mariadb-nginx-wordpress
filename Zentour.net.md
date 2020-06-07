@@ -55,13 +55,19 @@ END 1.30
 
 SUBTOTAL 6h
 
+**SSL Proxy**
+
+START 23:20
+
+Jsou vygenerované certifikáty a funguje SSL proxy, ale nefunguje prostup na nginx:8080 s wordpressem.
+
+END 03:00
+
 ### TODO
 
-[ ] Dodělat SSL přes traefik s auto-restartem (traefik musí jít asi na jiný port než 8080 nebo proč jinde ten nginx nejde?)
+[ ] SSL proxy (částečně už funguje)
 
 [ ] Rozchodit mailserver nebo jak je to s tím Hukotem?
-
-[x] Dodělat volumes nebo opravit tak, aby fungovaly zápisy
 
 # ACME.sh
 
