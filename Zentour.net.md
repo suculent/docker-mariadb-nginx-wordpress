@@ -63,6 +63,28 @@ Jsou vygenerované certifikáty a funguje SSL proxy, ale nefunguje prostup na ng
 
 END 03:00
 
+Nic nedorazí do frontendu, pokud je to z 80/443. Na portu 8080 HTTP funguje.
+
+    ==> ssl.error.log <==
+    2020/06/07 01:22:28 [error] 6#6: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 86.49.11.212, server: www.zentour.net, request: "GET / HTTP/1.1", upstream: "http://192.168.64.2:8080/", host: "www.zentour.net"
+
+    ==> ssl.access.log <==
+    86.49.11.212 - - [07/Jun/2020:01:22:28 +0000] "GET / HTTP/1.1" 502 560 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
+
+
+Ping funguje, curl tam není, apk index tam není.
+
+    curl http://192.168.64.2:8080/
+
+Ping funguje i lokálně, curl vrací connection rejected.
+
+    root@zentour:~/zentour.net# curl http://192.168.64.2:8080/
+    curl: (7) Failed to connect to 192.168.64.2 port 8080: Connection refused
+
+
+
+3:22
+
 ### TODO
 
 [ ] SSL proxy (částečně už funguje)
